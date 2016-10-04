@@ -1,13 +1,13 @@
 Package: sparkreadr
 Type: Package
-Title: Read in different types of data into Spark
+Title: Read different types of data files into Spark
 Description: Read in different types of data into Spark from R. Uses different
     Spark packages to load datasets in parallel in Spark.
 Maintainer: Daniel Emaasit <daniel.emaasit@gmail.com>
 Author: c(person("Daniel", "Emaasit", role = c("aut", "cre", "cph"), email =
     "daniel.emaasit@gmail.com"), person("EMAASIT", role = "cph"))
 License: GPL-3
-Version: 1.0
+Version: 0.0.9
 URL: https://github.com/emaasit/sparkreadr
 Date: 2016-10-07
 VignetteBuilder: knitr
