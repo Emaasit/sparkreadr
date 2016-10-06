@@ -76,35 +76,43 @@
       <div class="row">
   <div class="col-md-9">
     
-<h1 id="sparkreadr">sparkreadr</h1>
-<p>The <strong>spark.sas7bdat</strong> package allows R users working with <a href="https://spark.apache.org">Apache Spark</a> to read in <a href="http://www.sas.com">SAS</a> datasets in .sas7bdat format into Spark by using the <a href="https://spark-packages.org/package/saurfang/spark-sas7bdat">spark-sas7bdat Spark package</a>. This allows R users to load a SAS dataset in parallel into a Spark table.</p>
-<h2 id="example">Example</h2>
-<p>The following example reads in a file called iris.sas7bdat in parallel in a table called sas_example in Spark. Do try this with bigger data on your cluster and look at the help of the <a href="https://github.com/rstudio/sparklyr">sparklyr</a> package to connect to your Spark cluster.</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">library</span>(sparklyr)
-<span class="kw">library</span>(spark.sas7bdat)
-mysasfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"iris.sas7bdat"</span>, <span class="dt">package =</span> <span class="st">"spark.sas7bdat"</span>)
-
-sc &lt;-<span class="st"> </span><span class="kw">spark_connect</span>(<span class="dt">master =</span> <span class="st">"local"</span>)
-x &lt;-<span class="st"> </span><span class="kw"><a href="reference/spark_read_sas.html">spark_read_sas</a></span>(sc, <span class="dt">path =</span> mysasfile, <span class="dt">table =</span> <span class="st">"sas_example"</span>)
-x</code></pre></div>
-<p>The resulting pointer to a Spark table can be further used in dplyr statements</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
-x %&gt;%<span class="st"> </span><span class="kw">group_by</span>(Species) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">count =</span> <span class="kw">n</span>(), <span class="dt">length =</span> <span class="kw">mean</span>(Sepal_Length), <span class="dt">width =</span> <span class="kw">mean</span>(Sepal_Width))</code></pre></div>
+<h1 id="read-flat-files-into-spark-dataframes">Read flat files into Spark DataFrames</h1>
+<h2 id="what-is-sparkreadr">What is sparkreadr?</h2>
+<p>sparkreadr is an extension for sparklyr to read flat files into Spark DataFrames. It uses the Spark package spark-csv.</p>
 <h2 id="installation">Installation</h2>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">devtools::<span class="kw">install_github</span>(<span class="st">"bnosac/spark.sas7bdat"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)
-<span class="kw">vignette</span>(<span class="st">"spark_sas7bdat_examples"</span>, <span class="dt">package =</span> <span class="st">"spark.sas7bdat"</span>)</code></pre></div>
-<h2 id="speed-comparison">Speed comparison</h2>
-<p>In order to compare the functionality to the read_sas function from the <a href="https://cran.r-project.org/web/packages/haven/index.html">haven</a> package, below we show a comparison on a small 5234557 rows x 2 columns SAS dataset with only numeric data. Imported on 8 cores.</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">mysasfile &lt;-<span class="st"> "/home/bnosac/Desktop/testdata.sas7bdat"</span>
-<span class="kw">system.time</span>(x &lt;-<span class="st"> </span><span class="kw"><a href="reference/spark_read_sas.html">spark_read_sas</a></span>(sc, <span class="dt">path =</span> mysasfile, <span class="dt">table =</span> <span class="st">"testdata"</span>))
-   user  system elapsed 
-  <span class="fl">0.008</span>   <span class="fl">0.000</span>   <span class="fl">0.051</span> 
-<span class="kw">system.time</span>(x &lt;-<span class="st"> </span>haven::<span class="kw">read_sas</span>(mysasfile))
-   user  system elapsed 
-  <span class="fl">1.172</span>   <span class="fl">0.032</span>   <span class="fl">1.200</span> </code></pre></div>
-<h2 id="support-in-big-data-and-spark-analysis">Support in big data and Spark analysis</h2>
-<p>Need support in big data and Spark analysis? Contact BNOSAC: <a href="http://www.bnosac.be" class="uri">http://www.bnosac.be</a></p>
+<p>sparkreadr requires the sparklyr package to run</p>
+<h3 id="install-sparklyr">Install sparklyr</h3>
+<p>I recommend the latest stable version of sparklyr available on CRAN</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"sparklyr"</span>)</code></pre></div>
+<h3 id="install-sparkreadr">Install sparkreadr</h3>
+<p>Install the development version of sparkreadr from this Github repo using devtools</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">library</span>(devtools)
+devtools::<span class="kw">install_github</span>(<span class="st">"emaasit/sparkreadr"</span>)</code></pre></div>
+<h2 id="connecting-to-spark">Connecting to Spark</h2>
+<p>If Spark is not already installed, use the following sparklyr command to install your preferred version of Spark:</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">library</span>(sparklyr)
+<span class="kw">spark_install</span>(<span class="dt">version =</span> <span class="st">"2.0.0"</span>)</code></pre></div>
+<p>The call to <code>library(sparkreadr)</code> will make the sparkreadr functions available on the R search path and will also ensure that the dependencies required by the package are included when we connect to Spark.</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">library</span>(sparkreadr) </code></pre></div>
+<p>We can create a Spark connection as follows:</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">sc &lt;-<span class="st"> </span><span class="kw">spark_connect</span>(<span class="dt">master =</span> <span class="st">"local"</span>)</code></pre></div>
+<h2 id="reading-readr-files">Reading readr files</h2>
+<p>sparkreadr provides the function <code>spark_read_readr</code> to read readr data files into Spark DataFrames. It uses a Spark package called spark-readr. Here&rsquo;s an example.</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">mtcars_file &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"mtcars.csv"</span>, <span class="dt">package =</span> <span class="st">"sparkreadr"</span>)
+
+mtcars_df &lt;-<span class="st"> </span><span class="kw">spark_read_csv</span>(sc, <span class="dt">path =</span> mtcars_file, <span class="dt">table =</span> <span class="st">"readr_table"</span>)
+mtcars_df</code></pre></div>
+<p>The resulting pointer to a Spark table can be further used in dplyr statements.</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
+mtcars_df %&gt;%<span class="st"> </span><span class="kw">group_by</span>(cyl) %&gt;%
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">count =</span> <span class="kw">n</span>(), <span class="dt">avg.mpg =</span> <span class="kw">mean</span>(mpg), <span class="dt">avg.displacment =</span> <span class="kw">mean</span>(disp), <span class="dt">avg.horsepower =</span> <span class="kw">mean</span>(hp))</code></pre></div>
+<h2 id="logs-disconnect">Logs &amp; Disconnect</h2>
+<p>Look at the Spark log from R:</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">spark_log</span>(sc, <span class="dt">n =</span> <span class="dv">100</span>)</code></pre></div>
+<p>Now we disconnect from Spark:</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">spark_disconnect</span>(sc)</code></pre></div>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>Thanks to RStudio for the sparklyr package that provides functionality to create Extensions.</p>
 
   </div>
 </div>

@@ -4,8 +4,8 @@
 \name{sparkreadr}
 \alias{sparkreadr}
 \alias{sparkreadr-package}
-\title{Read in different data files into Spark}
+\title{Read in flat data files into Spark}
 \description{
-'sparkreadr' uses several Spark packages to load datasets in parallel in Spark.
+'sparkreadr' is an extension for sparklyr to read flat files into Spark DataFrames. It uses the Spark package spark-csv.
 }
 

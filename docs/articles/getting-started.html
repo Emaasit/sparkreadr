@@ -40,190 +40,78 @@
       <h1>Getting Started with sparkreadr</h1>
                         <h4 class="author">Daniel Emaasit</h4>
             
-            <h4 class="date">2016-10-04</h4>
+            <h4 class="date">2016-10-05</h4>
           </div>
 
     
     
-<p>Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The <code>html_vignette</code> output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The <code>html_vignette</code> format:</p>
-<ul><li>Never uses retina figures</li>
-<li>Has a smaller default figure size</li>
-<li>Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style</li>
-</ul><div id="vignette-info" class="section level2">
-<h2>Vignette Info</h2>
-<p>Note the various macros within the <code>vignette</code> section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the <code>title</code> field and the <code>\VignetteIndexEntry</code> to match the title of your vignette.</p>
+<div id="read-flat-files-into-spark-dataframes" class="section level1">
+<h1>Read flat files into Spark DataFrames</h1>
+<div id="what-is-sparkreadr" class="section level2">
+<h2>What is sparkreadr?</h2>
+<p>sparkreadr is an extension for sparklyr to read flat files into Spark DataFrames. It uses the Spark package spark-csv.</p>
 </div>
-<div id="styles" class="section level2">
-<h2>Styles</h2>
-<p>The <code>html_vignette</code> template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:</p>
-<pre><code>output: 
-  rmarkdown::html_vignette:
-    css: mystyles.css</code></pre>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>sparkreadr requires the sparklyr package to run</p>
+<div id="install-sparklyr" class="section level3">
+<h3>Install sparklyr</h3>
+<p>I recommend the latest stable version of sparklyr available on CRAN</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"sparklyr"</span>)</code></pre></div>
 </div>
-<div id="figures" class="section level2">
-<h2>Figures</h2>
-<p>The figure sizes have been customised so that you can easily put two images side-by-side.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="dv">1</span>:<span class="dv">10</span>)
-<span class="kw">plot</span>(<span class="dv">10</span>:<span class="dv">1</span>)</code></pre></div>
-<p><img src="getting-started_files/figure-html/unnamed-chunk-1-1.png" width="672"><img src="getting-started_files/figure-html/unnamed-chunk-1-2.png" width="672"></p>
-<p>You can enable figure captions by <code>fig_caption: yes</code> in YAML:</p>
-<pre><code>output:
-  rmarkdown::html_vignette:
-    fig_caption: yes</code></pre>
-<p>Then you can use the chunk option <code>fig.cap = "Your figure caption."</code> in <strong>knitr</strong>.</p>
+<div id="install-sparkreadr" class="section level3">
+<h3>Install sparkreadr</h3>
+<p>Install the development version of sparkreadr from this Github repo using devtools</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
+devtools::<span class="kw">install_github</span>(<span class="st">"emaasit/sparkreadr"</span>)</code></pre></div>
 </div>
-<div id="more-examples" class="section level2">
-<h2>More Examples</h2>
-<p>You can write math expressions, e.g. <span class="math inline">\(Y = X\beta + \epsilon\)</span>, footnotes<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, and tables, e.g.&nbsp;using <code>knitr::kable()</code>.</p>
-<table><thead><tr class="header"><th></th>
-<th align="right">mpg</th>
-<th align="right">cyl</th>
-<th align="right">disp</th>
-<th align="right">hp</th>
-<th align="right">drat</th>
-<th align="right">wt</th>
-<th align="right">qsec</th>
-<th align="right">vs</th>
-<th align="right">am</th>
-<th align="right">gear</th>
-<th align="right">carb</th>
-</tr></thead><tbody><tr class="odd"><td>Mazda RX4</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.620</td>
-<td align="right">16.46</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr><tr class="even"><td>Mazda RX4 Wag</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.875</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr><tr class="odd"><td>Datsun 710</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">108.0</td>
-<td align="right">93</td>
-<td align="right">3.85</td>
-<td align="right">2.320</td>
-<td align="right">18.61</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">1</td>
-</tr><tr class="even"><td>Hornet 4 Drive</td>
-<td align="right">21.4</td>
-<td align="right">6</td>
-<td align="right">258.0</td>
-<td align="right">110</td>
-<td align="right">3.08</td>
-<td align="right">3.215</td>
-<td align="right">19.44</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr><tr class="odd"><td>Hornet Sportabout</td>
-<td align="right">18.7</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">175</td>
-<td align="right">3.15</td>
-<td align="right">3.440</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">2</td>
-</tr><tr class="even"><td>Valiant</td>
-<td align="right">18.1</td>
-<td align="right">6</td>
-<td align="right">225.0</td>
-<td align="right">105</td>
-<td align="right">2.76</td>
-<td align="right">3.460</td>
-<td align="right">20.22</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr><tr class="odd"><td>Duster 360</td>
-<td align="right">14.3</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">245</td>
-<td align="right">3.21</td>
-<td align="right">3.570</td>
-<td align="right">15.84</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">4</td>
-</tr><tr class="even"><td>Merc 240D</td>
-<td align="right">24.4</td>
-<td align="right">4</td>
-<td align="right">146.7</td>
-<td align="right">62</td>
-<td align="right">3.69</td>
-<td align="right">3.190</td>
-<td align="right">20.00</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr><tr class="odd"><td>Merc 230</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">140.8</td>
-<td align="right">95</td>
-<td align="right">3.92</td>
-<td align="right">3.150</td>
-<td align="right">22.90</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr><tr class="even"><td>Merc 280</td>
-<td align="right">19.2</td>
-<td align="right">6</td>
-<td align="right">167.6</td>
-<td align="right">123</td>
-<td align="right">3.92</td>
-<td align="right">3.440</td>
-<td align="right">18.30</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr></tbody></table><p>Also a quote using <code>&gt;</code>:</p>
-<blockquote>
-<p>&ldquo;He who gives up [code] safety for [code] speed deserves neither.&rdquo; (<a href="https://twitter.com/hadleywickham/status/504368538874703872">via</a>)</p>
-</blockquote>
 </div>
-<div class="footnotes">
-<hr><ol><li id="fn1"><p>A footnote here.<a href="#fnref1">&#8617;</a></p></li>
-</ol></div>
+<div id="connecting-to-spark" class="section level2">
+<h2>Connecting to Spark</h2>
+<p>If Spark is not already installed, use the following sparklyr command to install your preferred version of Spark:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(sparklyr)
+<span class="kw">spark_install</span>(<span class="dt">version =</span> <span class="st">"2.0.0"</span>)</code></pre></div>
+<p>The call to <code>library(sparkreadr)</code> will make the sparkreadr functions available on the R search path and will also ensure that the dependencies required by the package are included when we connect to Spark.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(sparkreadr) </code></pre></div>
+<p>We can create a Spark connection as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sc &lt;-<span class="st"> </span><span class="kw">spark_connect</span>(<span class="dt">master =</span> <span class="st">"local"</span>)</code></pre></div>
+</div>
+<div id="reading-readr-files" class="section level2">
+<h2>Reading readr files</h2>
+<p>sparkreadr provides the function <code>spark_read_readr</code> to read readr data files into Spark DataFrames. It uses a Spark package called spark-readr. Here&rsquo;s an example.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars_file &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"mtcars.csv"</span>, <span class="dt">package =</span> <span class="st">"sparkreadr"</span>)
+
+mtcars_df &lt;-<span class="st"> </span><span class="kw">spark_read_csv</span>(sc, <span class="dt">path =</span> mtcars_file, <span class="dt">table =</span> <span class="st">"readr_table"</span>)
+mtcars_df</code></pre></div>
+<p>The resulting pointer to a Spark table can be further used in dplyr statements.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
+mtcars_df %&gt;%<span class="st"> </span><span class="kw">group_by</span>(cyl) %&gt;%
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">count =</span> <span class="kw">n</span>(), <span class="dt">avg.mpg =</span> <span class="kw">mean</span>(mpg), <span class="dt">avg.displacment =</span> <span class="kw">mean</span>(disp), <span class="dt">avg.horsepower =</span> <span class="kw">mean</span>(hp))</code></pre></div>
+</div>
+<div id="logs-disconnect" class="section level2">
+<h2>Logs &amp; Disconnect</h2>
+<p>Look at the Spark log from R:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">spark_log</span>(sc, <span class="dt">n =</span> <span class="dv">100</span>)</code></pre></div>
+<p>Now we disconnect from Spark:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">spark_disconnect</span>(sc)</code></pre></div>
+</div>
+<div id="acknowledgements" class="section level2">
+<h2>Acknowledgements</h2>
+<p>Thanks to RStudio for the sparklyr package that provides functionality to create Extensions.</p>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs">
         <div id="tocnav">
       <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked"><li><a href="#vignette-info">Vignette Info</a></li>
-      <li><a href="#styles">Styles</a></li>
-      <li><a href="#figures">Figures</a></li>
-      <li><a href="#more-examples">More Examples</a></li>
+      <ul class="nav nav-pills nav-stacked"><li><a href="#read-flat-files-into-spark-dataframes">Read flat files into Spark DataFrames</a><ul class="nav nav-pills nav-stacked"><li><a href="#what-is-sparkreadr">What is sparkreadr?</a></li>
+      <li><a href="#installation">Installation</a></li>
+      <li><a href="#connecting-to-spark">Connecting to Spark</a></li>
+      <li><a href="#reading-readr-files">Reading readr files</a></li>
+      <li><a href="#logs-disconnect">Logs &amp; Disconnect</a></li>
+      <li><a href="#acknowledgements">Acknowledgements</a></li>
+      </ul></li>
       </ul></div>
       </div>
 

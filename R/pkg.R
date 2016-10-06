@@ -1,5 +1,5 @@
-#' @title Read in different data files into Spark
-#' @description 'sparkreadr' uses several Spark packages to load datasets in parallel in Spark.
+#' @title Read in flat data files into Spark
+#' @description 'sparkreadr' is an extension for sparklyr to read flat files into Spark DataFrames. It uses the Spark package spark-csv.
 #' @name sparkreadr
 #' @aliases sparkreadr-package
 #' @docType package

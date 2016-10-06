@@ -9,50 +9,79 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r setup, include=FALSE, eval = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+# Read flat files into Spark DataFrames
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+## What is sparkreadr?
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+sparkreadr is an extension for sparklyr to read flat files into Spark DataFrames. It uses the Spark package spark-csv.
 
-## More Examples
+## Installation
+sparkreadr requires the sparklyr package to run
 
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+### Install sparklyr
+I recommend the latest stable version of sparklyr available on CRAN
+```{r eval = FALSE}
+install.packages("sparklyr")
 ```
 
-Also a quote using `>`:
+### Install sparkreadr
+Install the development version of sparkreadr from this Github repo using devtools
+```{r eval = FALSE}
+library(devtools)
+devtools::install_github("emaasit/sparkreadr")
+```
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+## Connecting to Spark
+
+If Spark is not already installed, use the following sparklyr command to install your preferred version of Spark:
+```{r eval = FALSE}
+library(sparklyr)
+spark_install(version = "2.0.0")
+```
+
+The call to `library(sparkreadr)` will make the sparkreadr functions available on the R search path and will also ensure that the dependencies required by the package are included when we connect to Spark.
+```{r eval = FALSE}
+library(sparkreadr) 
+```
+
+We can create a Spark connection as follows:
+```{r eval = FALSE}
+sc <- spark_connect(master = "local")
+```
+
+## Reading readr files
+
+sparkreadr provides the function `spark_read_readr` to read readr data files into Spark DataFrames. It uses a Spark package called spark-readr. Here's an example.
+
+```{r eval = FALSE}
+mtcars_file <- system.file("extdata", "mtcars.csv", package = "sparkreadr")
+
+mtcars_df <- spark_read_csv(sc, path = mtcars_file, table = "readr_table")
+mtcars_df
+```
+
+The resulting pointer to a Spark table can be further used in dplyr statements.
+```{r eval = FALSE}
+library(dplyr)
+mtcars_df %>% group_by(cyl) %>%
+  summarise(count = n(), avg.mpg = mean(mpg), avg.displacment = mean(disp), avg.horsepower = mean(hp))
+```
+
+## Logs & Disconnect
+
+Look at the Spark log from R:
+```{r eval = FALSE}
+spark_log(sc, n = 100)
+```
+
+Now we disconnect from Spark:
+```{r eval = FALSE}
+spark_disconnect(sc)
+```
+
+## Acknowledgements
+Thanks to RStudio for the sparklyr package that provides functionality to create Extensions.
